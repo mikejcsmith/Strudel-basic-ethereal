@@ -1,0 +1,39 @@
+setcps(120/60/4); // 120 BPM for a chilled pace
+
+// 1. The Soft Kick
+const kick = s("bd").n(3).gain(1.1).clip(1);
+
+// 2. The Atmosphere (Pads)
+const pads = note("<c3 eb3 g3> <bb3 d3 f3>").chord("m9")
+  .s("sawtooth")
+  .vowel("a") // Adds that "Choir" sound
+  .lpf(sine.range(400, 3000).slow(16)) 
+  .jux(rev) 
+  .room(0.9) // Big Reverb
+  .gain(0.5)
+  .gain(sine.range(0.2, 1).fast(4)); // Gentle pulsing
+
+// 3. The Raindrops (FIXED)
+const raindrops = note("c5 eb5 g5 bb5")
+  .s("sine") 
+  // --- THE FIX ---
+  // Instead of .vibrato(), we use .detune()
+  // We range from 0 to 10 cents, 6 times a cycle.
+  .detune(sine.range(0, 10).fast(6)) 
+  // ----------------
+  .mask("<1 1 0 1>") 
+  .delay(0.6).delaytime(0.5).delayfeedback(0.7) 
+  .gain(0.65);
+
+// 4. The Shakers
+const shakers = s("hh*8").n(12)
+  .gain(sine.range(0.2, 0.7).fast(2)) 
+  .pan(sine.range(0.2, 0.8).slow(2));
+
+// --- PLAY ---
+stack(
+  kick,
+  pads,
+  raindrops,
+  shakers
+)
